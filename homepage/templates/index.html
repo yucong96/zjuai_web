@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ZJU AI Club</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+</head>
+<body onload="window_resize()">
+<script id="vertexShader" type="x-shader/x-vertex">
+// Uniforms
+uniform float time;
+uniform float height;
+varying vec3 vNormal;
+
+void main(void) {
+   vec3 v = position;
+   vNormal = normal;
+   v.z = cos(0.02 * position.x + 0.02 * position.z + 0.2 * (time)) * height;
+
+   gl_Position = projectionMatrix *
+                modelViewMatrix *
+                vec4(v, 1.0);
+}
+
+
+</script>
+<script id="fragmentShader" type="x-shader/x-fragment">
+varying vec3 vNormal;
+uniform float time;
+
+void main(void) {
+    vec3 light = vec3(0.1, .9, .1);
+
+    light = normalize(light);
+
+    float dProd = max(0.2, dot(vNormal, light));
+
+    gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
+}
+
+</script>
+<div id="main_div" style="position:relative;height: 600px">
+    <nav class="navbar navbar-default navbar-fixed-top zjuai-homepage-navbar" role="navigation">
+        <div class="container-fluid" style="background-color: black">
+            <div class="navbar-header" style="cursor: pointer">
+                <img class="navbar-brand" height="60" src="/static/img/logo_simple.png" href="/"/>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#"><p class="zjuai-homepage-font">组织介绍</p></a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><p class="zjuai-homepage-font">推荐资料</p></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><p class="zjuai-homepage-font">书籍</p></a></li>
+                            <li><a href="#"><p class="zjuai-homepage-font">视频</p></a></li>
+                            <li><a href="#"><p class="zjuai-homepage-font">论文</p></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="zjuai-homepage-img" align="right">
+        <img src="/static/img/logo_web.png" height="400" align="middle" />
+    </div>
+
+    <div id="canvas" style="position:absolute;z-index:1">
+    </div>
+</div>
+
+<footer class="panel-footer navbar-fixed-bottom zjuai-homepage-footer">
+    <p style="color:#DDDDDD; text-align: center">浙江大学学生人工智能协会 - Student AI Association of Zhejiang University</p>
+</footer>
+
+<script src="/static/js/three.js"></script>
+<script src="/static/js/Sky.js"></script>
+<script src="/static/js/index.js"></script>
+<script type="text/javascript">
+    $(window).resize(function () {
+        window_resize();
+    });
+    function window_resize() {
+        var main_div = document.getElementById("main_div");
+        main_div.setAttribute("height", window.innerHeight.toString()+"px");
+        main_div.setAttribute("width", window.innerWidth.toString()+"px");
+    }
+</script>
+</body>
+</html>
